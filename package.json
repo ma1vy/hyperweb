@@ -7,13 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview",
-    "start": "bun run server/index.ts"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@hono/node-server": "^2.1.0",
     "framer-motion": "^13.1.0",
-    "hono": "^4.13.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.2"
