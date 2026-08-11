@@ -10,6 +10,7 @@ import PixelBlast from "@/components/PixelBlast";
 import Beams from "@/components/Beams";
 import FaultyTerminal from "@/components/FaultyTerminal";
 import DotGrid from "@/components/DotGrid";
+import Iridescence from "@/components/Iridescence";
 
 export const BACKGROUNDS = [
   {
@@ -81,6 +82,13 @@ export const BACKGROUNDS = [
     description:
       "An interactive dot grid that warps and ripples around the cursor — a playful, tactile backdrop.",
     usage: `<DotGrid />`,
+  },
+  {
+    name: "Iridescence",
+    Component: Iridescence,
+    description:
+      "Luminous iridescent sheen that shifts hue across the surface — a pearlescent, dynamic backdrop.",
+    usage: `<Iridescence />`,
   },
 ] as const;
 

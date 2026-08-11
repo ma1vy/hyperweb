@@ -1,26 +1,106 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { motion } from "motion/react";
+import { Download, ExternalLink } from "lucide-react";
+import { useTheme } from "@/lib/theme";
+import { RotatingWord } from "@/components/RotatingWord";
 
-function Home() {
+type Release = {
+  tag: string;
+  assets: Array<{ id: number; name: string }>;
+};
+
+const reveal = {
+  hidden: { opacity: 0, y: 5 },
+  visible: { opacity: 1, y: 0 },
+};
+
+export default function Home() {
+  const { dark } = useTheme();
+  const [release, setRelease] = useState<Release | null>(null);
+
+  useEffect(() => {
+    fetch("/api/hypersomnia/latest")
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`Request failed (${res.status})`);
+        return res.json();
+      })
+      .then(setRelease)
+      .catch(() => {});
+  }, []);
+
+  const zipAsset = release?.assets.find((a) => a.name.toLowerCase().endsWith(".zip"));
+
   return (
-    <main className="flex min-h-screen w-full items-center justify-center bg-slate-950 px-6 text-white">
-      <div className="mx-auto max-w-2xl text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-          hyperweb
-        </h1>
-        <p className="mt-4 text-lg text-white/60">
-          React + Vite + Bun + Hono sample project.
-        </p>
-        <nav className="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <Link
-            to="/plugins"
-            className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium transition-colors hover:bg-white/10"
+    <main className="relative z-10 h-screen w-full overflow-hidden text-white">
+      <div className="h-full">
+        <section className="flex h-full flex-col items-center justify-center px-6 text-center">
+          <motion.div
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            /plugins
-          </Link>
-        </nav>
+            <h1 className="mx-auto flex w-full items-center justify-center text-6xl font-bold tracking-tight sm:text-8xl">
+              <motion.span
+                layout
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent"
+              >
+                Hyper
+              </motion.span>
+              <RotatingWord words={["somnia", "Rest", "AI", "Mule"]} className="text-white" />
+            </h1>
+          </motion.div>
+
+          <motion.div
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+            className="pt-6"
+          >
+            <p className="text-base font-semibold tracking-wide text-white sm:text-lg">
+              Rest. Test. Repeat.
+            </p>
+            <p className="mt-3 text-sm tracking-wide text-white/40 sm:text-base">
+              Built-in MuleSoft compatibility
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
+            className="flex flex-wrap items-center justify-center gap-4 pt-10"
+          >
+            <a
+              href={zipAsset ? `/api/hypersomnia/download/${zipAsset.id}` : "#"}
+              aria-disabled={!zipAsset}
+              className={`inline-flex items-center gap-3 rounded-2xl px-14 py-6 text-2xl font-semibold transition-colors ${
+                dark
+                  ? "bg-white text-slate-950 hover:bg-white/90"
+                  : "bg-slate-950 text-white hover:bg-slate-800"
+              }`}
+            >
+              Download
+              <Download className="size-6" />
+            </a>
+            <a
+              href="https://github.com/ma1vy/hypersomnia/releases"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-3 rounded-2xl border border-white/20 bg-transparent px-14 py-6 text-2xl font-semibold text-white/90 backdrop-blur transition-colors hover:bg-white/10 hover:text-white"
+            >
+              All Releases
+              <ExternalLink className="size-6" />
+            </a>
+          </motion.div>
+        </section>
       </div>
     </main>
   );
 }
-
-export default Home;
