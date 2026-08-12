@@ -81,18 +81,23 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
             className="flex flex-wrap items-center justify-center gap-4 pt-10"
           >
-            <a
-              href={zipAsset ? `/api/hypersomnia/download/${zipAsset.id}` : "#"}
-              aria-disabled={!zipAsset}
-              className={`inline-flex items-center gap-3 rounded-2xl px-14 py-6 text-2xl font-semibold transition-colors ${
-                dark
-                  ? "bg-white text-slate-950 hover:bg-white/90"
-                  : "bg-slate-950 text-white hover:bg-slate-800"
-              }`}
-            >
-              Download
-              <Download className="size-6" />
-            </a>
+            <div className="flex flex-col items-center gap-3">
+              <a
+                href={zipAsset ? `/api/hypersomnia/download/${zipAsset.id}` : "#"}
+                aria-disabled={!zipAsset}
+                className={`inline-flex items-center gap-3 rounded-2xl px-14 py-6 text-2xl font-semibold transition-colors ${
+                  dark
+                    ? "bg-white text-slate-950 hover:bg-white/90"
+                    : "bg-slate-950 text-white hover:bg-slate-800"
+                }`}
+              >
+                Download
+                <Download className="size-6" />
+              </a>
+              {release?.tag && (
+                <p className="text-sm text-white/40">Version {release.tag}</p>
+              )}
+            </div>
             <a
               href="https://github.com/ma1vy/hypersomnia/releases"
               target="_blank"
