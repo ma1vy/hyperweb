@@ -1,0 +1,16 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deploy
+        run: |
+          curl -f -X POST \
+            -H "Accept: application/json" \
+            "https://deploy.carminatti.dev/api/deploy/LRXB8vUM5NX6W3dFsTnyP"
