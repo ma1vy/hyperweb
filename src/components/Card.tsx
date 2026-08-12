@@ -107,12 +107,14 @@ export function useCardColors(): CardColors {
 
 export type CardProps = {
   variant?: number | string;
+  square?: boolean;
   className?: string;
   children: ReactNode;
 };
 
 export function Card({
   variant = 0,
+  square = true,
   className,
   children,
 }: CardProps) {
@@ -134,7 +136,7 @@ export function Card({
   return (
     <CardColorContext.Provider value={colors}>
       <article
-        className={`flex aspect-square flex-col justify-between gap-3 overflow-hidden rounded-2xl border p-6 text-left backdrop-blur ${resolved.bgClassName} ${className ?? ""}`}
+        className={`flex ${square ? "aspect-square" : ""} flex-col justify-between gap-3 overflow-hidden rounded-2xl border p-6 text-left backdrop-blur ${resolved.bgClassName} ${className ?? ""}`}
       >
         {children}
       </article>
