@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { Download, ExternalLink } from "lucide-react";
 import { useTheme } from "@/lib/theme";
+import { HyperLogo } from "@/components/HyperLogo";
 import { RotatingWord } from "@/components/RotatingWord";
 
 type Release = {
@@ -41,13 +42,16 @@ export default function Home() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <h1 className="mx-auto flex w-full items-center justify-center text-6xl font-bold tracking-tight sm:text-8xl">
+            <h1 className="mx-auto flex w-full flex-col items-center justify-center gap-1 text-6xl font-bold tracking-tight sm:flex-row sm:gap-0 sm:text-8xl">
               <motion.span
                 layout
                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent"
+                className="inline-flex items-center"
               >
-                Hyper
+                <HyperLogo className="-mr-2 h-[1.4em] w-auto mb-4" />
+                <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                  yper
+                </span>
               </motion.span>
               <RotatingWord words={["somnia", "Rest", "AI", "Mule"]} className="text-white" />
             </h1>
