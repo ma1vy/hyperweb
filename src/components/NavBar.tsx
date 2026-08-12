@@ -16,6 +16,18 @@ export function NavBar() {
 
       <div className="flex items-center gap-2">
         <Link
+          to="/about"
+          className="rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/70 backdrop-blur transition-colors hover:bg-white/10 hover:text-white"
+        >
+          About
+        </Link>
+        <Link
+          to="/features"
+          className="rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/70 backdrop-blur transition-colors hover:bg-white/10 hover:text-white"
+        >
+          Features
+        </Link>
+        <Link
           to="/plugins"
           className="rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/70 backdrop-blur transition-colors hover:bg-white/10 hover:text-white"
         >
