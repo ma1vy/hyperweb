@@ -81,7 +81,7 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
             className="flex flex-wrap items-center justify-center gap-4 pt-10"
           >
-            <div className="flex flex-col items-center gap-3">
+            <div className="relative flex flex-col items-center">
               <a
                 href={zipAsset ? `/api/hypersomnia/download/${zipAsset.id}` : "#"}
                 aria-disabled={!zipAsset}
@@ -95,7 +95,9 @@ export default function Home() {
                 <Download className="size-6" />
               </a>
               {release?.tag && (
-                <p className="text-sm text-white/40">Version {release.tag}</p>
+                <p className="absolute top-full mt-2 whitespace-nowrap text-sm text-white/40">
+                  Version {release.tag}
+                </p>
               )}
             </div>
             <a
