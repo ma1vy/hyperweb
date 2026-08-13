@@ -55,11 +55,11 @@ artifact.
 
 | Metric | dataweave-to-js (`--build`) | Mule 4.6 EE |
 |---|---|---|
-| Cold start | 1008 ms | 15349 ms |
-| Latency p50 | 5.9 ms | 1.9 ms |
-| Latency p95 | 7.6 ms | 3.4 ms |
-| Latency p99 | 9.1 ms | 5.2 ms |
-| Throughput | ~33.1k req/s | ~72.8k req/s |
+| Cold start | 1023 ms | 16428 ms |
+| Latency p50 | 3.8 ms | 2.1 ms |
+| Latency p95 | 5.6 ms | 4.5 ms |
+| Latency p99 | 6.8 ms | 8.2 ms |
+| Throughput | ~37.9k req/s | ~62.1k req/s |
 
 Latency/throughput are aggregated over the 3 endpoints. Single machine, not a
 certified benchmark — treat as directional. Every request in every run returned
@@ -77,19 +77,24 @@ Three hot-path changes shipped alongside `--build`:
   twice per request.
 - **Bun.serve host** in the built artifact — native Bun HTTP instead of
   `node:http`, with memoized route resolution.
+- **Memoized date formatting** — `formatDate` compiles its pattern to a token
+  list once and caches it (15.7× on the hot path), plus fixes two formatting
+  bugs (single-letter `d`/`M`/`H` tokens and the `a` AM/PM token matching
+  inside day names).
 
-Together these roughly doubled the measured throughput of the pre-optimization
-baseline (17.1k → 33.1k rps) and cut aggregate latency from 10.1ms to 5.9ms
-p50, while keeping cold start near 1s.
+These roughly doubled the measured throughput of the pre-optimization baseline
+(17.1k → 37.9k rps) and cut aggregate latency from 10.1ms to 3.8ms p50, while
+keeping cold start near 1s. The transform-heavy GET endpoint went from ~4.4k
+to ~10.1k rps.
 
 ## Comparison with Mule
 
 | Aspect | dataweave-to-js | Mule 4.6 EE |
 |---|---|---|
 | Runtime | Node.js/Bun event loop | JVM (thread pools) |
-| Cold start | ~1 s | ~15 s (JVM + Spring + connector bootstrap) |
-| Request latency | ~6 ms p50 (built artifact) | ~2 ms p50 |
-| Throughput | ~33k req/s measured | ~73k req/s measured |
+| Cold start | ~1 s | ~16 s (JVM + Spring + connector bootstrap) |
+| Request latency | ~3.8 ms p50 (built artifact) | ~2.1 ms p50 |
+| Throughput | ~38k req/s measured | ~62k req/s measured |
 | Startup model | compile once at load, in-memory closures | app packaged as jar, deployed to runtime |
 | Footprint | single JS file, zero deps | full runtime distribution |
 | Coverage | DataWeave + core Mule components | all connectors |
