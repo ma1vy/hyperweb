@@ -10,7 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger deploy
+        env:
+          REF: ${{ github.ref }}
+          SHA: ${{ github.sha }}
         run: |
           curl -f -X POST \
             -H "Accept: application/json" \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Event: push" \
+            -H "X-GitHub-Delivery: ${{ github.run_id }}" \
+            -d "{\"ref\":\"$REF\",\"head_commit\":{\"id\":\"$SHA\",\"message\":\"Deploy from GitHub Actions\"},\"commits\":[]}" \
             "https://deploy.carminatti.dev/api/deploy/LRXB8vUM5NX6W3dFsTnyP"
