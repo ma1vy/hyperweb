@@ -233,9 +233,11 @@ export default function Plugins() {
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden text-white">
-      <BackgroundSwitcher index={bgIndex} onChange={setBgIndex} />
+      <div className="z-10">
+        <BackgroundSwitcher index={bgIndex} onChange={setBgIndex} />
+      </div>
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center gap-8 px-6 py-16 text-center">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center gap-8 px-6 py-16 text-center ">
         <header className="space-y-3">
           <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-white/70 backdrop-blur">
             Plugins
