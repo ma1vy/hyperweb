@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Moon, Sun, X } from "lucide-react";
+import { Coffee, Menu, Moon, Sun, X } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "@/lib/theme";
 
@@ -110,6 +110,9 @@ export function NavBar() {
               {dark ? "Light mode" : "Dark mode"}
             </button>
           </motion.div>
+          <div className="mt-4 flex justify-center opacity-40">
+            <Coffee className="size-5" aria-hidden="true" />
+          </div>
         </motion.div>
       </motion.div>
     </nav>
