@@ -111,7 +111,7 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
             className="flex flex-wrap items-center justify-center gap-4 pt-10"
           >
-            <div className="relative flex flex-col items-center gap-3">
+            <div className="relative flex flex-col items-center">
               <a
                 href={zipAsset ? `/api/hypersomnia/download/${zipAsset.id}` : "#"}
                 aria-disabled={!zipAsset}
@@ -125,9 +125,7 @@ export default function Home() {
                 <Download className="size-6" />
               </a>
               {release?.tag && (
-                <p className="absolute left-1/2 top-full -translate-x-1/2 pt-2 text-sm text-white/40">
-                  Version {release.tag}
-                </p>
+                <p className="pt-2 text-sm text-white/40">Version {release.tag}</p>
               )}
             </div>
             <a
@@ -170,8 +168,8 @@ export default function Home() {
               single-machine measurements. Tests were run on Linux with Oha.
             </p>
           </div>
-          <div className="w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
-            <table className="w-full text-left text-sm">
+          <div className="w-full max-w-3xl overflow-x-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
+            <table className="w-full text-left text-sm whitespace-nowrap">
               <thead>
                 <tr className="border-b border-white/10 text-white/50">
                   <th className="px-4 py-3 font-medium">Metric</th>
@@ -193,16 +191,22 @@ export default function Home() {
                     <tr key={row.label} className="border-b border-white/5 last:border-0">
                       <td className="px-4 py-3 text-white/50">{row.label}</td>
                       <td className="px-4 py-3 font-semibold text-white">
-                        {formatMetric(row.dw)} {row.unit}
-                        <span
-                          className={`ml-2 text-xs font-medium ${
-                            isGreen ? "text-emerald-400" : "text-rose-400"
-                          }`}
-                        >
-                          +{pct.toFixed(1)}%
+                        <span className="inline-flex items-baseline gap-1.5">
+                          <span>
+                            {formatMetric(row.dw)} {row.unit}
+                          </span>
+                          <span
+                            className={`text-xs font-medium ${
+                              isGreen ? "text-emerald-400" : "text-rose-400"
+                            }`}
+                          >
+                            +{pct.toFixed(1)}%
+                          </span>
                         </span>
                       </td>
-                      <td className="px-4 py-3">{formatMetric(row.mule)} {row.unit}</td>
+                      <td className="px-4 py-3">
+                        {formatMetric(row.mule)} {row.unit}
+                      </td>
                     </tr>
                   );
                 })}
