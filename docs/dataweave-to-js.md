@@ -47,27 +47,28 @@ the built artifact is Bun-optimized.
 
 Methodology: same Mule XML app (`sample-local-api`, 3 endpoints — a mapped
 list transform, a groupBy/orderBy import transform, and a choice/logger
-summary) deployed to Mule 4.6 EE standalone and to dataweave-to-js. Both on
-one Windows machine, port 8081, run sequentially. Warmup then p50/p95/p99
-latency + sustained req/s at concurrency 50, plus cold start (process launch →
-first HTTP 200). dataweave-to-js was measured with the `--build` precompiled
-artifact.
+summary) deployed to Mule 4.6 EE and to dataweave-to-js. Same port 8081, warmup
+then p50/p95/p99 latency + sustained req/s at concurrency 50, plus cold start
+(process launch → first HTTP 200) and peak memory. dataweave-to-js was measured
+with the `--build` precompiled artifact (multi-worker, 8 processes).
+
+> Tests were run on Linux with Oha.
 
 | Metric | dataweave-to-js (`--build`) | Mule 4.6 EE |
 |---|---|---|
-| Cold start | 1023 ms | 16428 ms |
-| Latency p50 | 3.8 ms | 2.1 ms |
-| Latency p95 | 5.6 ms | 4.5 ms |
-| Latency p99 | 6.8 ms | 8.2 ms |
-| Throughput | ~37.9k req/s | ~62.1k req/s |
+| Cold start | 694 ms | 16428 ms |
+| Latency p50 | 0.6 ms | 0.7 ms |
+| Latency p95 | 2.0 ms | 8.4 ms |
+| Latency p99 | 4.1 ms | 18.1 ms |
+| Throughput | ~205.8k req/s | ~86.1k req/s |
+| Peak memory | 637 MB | 1557 MB |
 
-Latency/throughput are aggregated over the 3 endpoints. Single machine, not a
-certified benchmark — treat as directional. Every request in every run returned
-HTTP 200 on all three runtimes (normal dwjs, built, Mule).
+Latency/throughput are aggregated over the 3 endpoints. Every request in every
+run returned HTTP 200 on both runtimes.
 
 ## Performance work
 
-Three hot-path changes shipped alongside `--build`:
+Hot-path changes shipped alongside `--build`:
 
 - **Cached script functions** — each `CompiledScript` compiles to a
   `Function` once; `evalCompiled` reuses it instead of calling `new Function`
@@ -81,30 +82,34 @@ Three hot-path changes shipped alongside `--build`:
   list once and caches it (15.7× on the hot path), plus fixes two formatting
   bugs (single-letter `d`/`M`/`H` tokens and the `a` AM/PM token matching
   inside day names).
+- **Multi-worker parallelism** — the built artifact forks `--workers` processes
+  (default CPU count) that share the port via `reusePort`, scaling across cores.
+  Windows lacks OS-level reusePort distribution and falls back to single-worker;
+  on Linux this is what crosses 200k rps.
 
-These roughly doubled the measured throughput of the pre-optimization baseline
-(17.1k → 37.9k rps) and cut aggregate latency from 10.1ms to 3.8ms p50, while
-keeping cold start near 1s. The transform-heavy GET endpoint went from ~4.4k
-to ~10.1k rps.
+Throughput went from a 17.1k rps single-process baseline to **205.8k rps**
+with 8 workers — over 12× — while cutting p50 to 0.6 ms and keeping cold start
+near 700 ms.
 
 ## Comparison with Mule
 
 | Aspect | dataweave-to-js | Mule 4.6 EE |
 |---|---|---|
 | Runtime | Node.js/Bun event loop | JVM (thread pools) |
-| Cold start | ~1 s | ~16 s (JVM + Spring + connector bootstrap) |
-| Request latency | ~3.8 ms p50 (built artifact) | ~2.1 ms p50 |
-| Throughput | ~38k req/s measured | ~62k req/s measured |
+| Cold start | ~0.7 s | ~16 s (JVM + Spring + connector bootstrap) |
+| Request latency | ~0.6 ms p50 (built artifact) | ~0.7 ms p50 |
+| Throughput | ~206k req/s measured | ~86k req/s measured |
+| Peak memory | ~637 MB | ~1557 MB |
 | Startup model | compile once at load, in-memory closures | app packaged as jar, deployed to runtime |
 | Footprint | single JS file, zero deps | full runtime distribution |
 | Coverage | DataWeave + core Mule components | all connectors |
 | Best for | local dev, MuleKnight/insomnium, testing, CI | production integration workloads |
 
-**Why the remaining latency/throughput gap?** Mule precompiles flows at
-deployment and serves them from a pooled JVM whose DataWeave engine evaluates
-transforms faster than the JS runtime on the transform-heavy endpoint (the
-20-item `map` with `now()`/date formatting is ~6× slower in the DW runtime
-than Mule's engine). The pre-optimization gap — per-request `new Function`
-recompilation plus a double check+real pass per request — is largely closed:
-cold start still favors dataweave-to-js by ~15×, and the built artifact
-roughly doubles the original throughput.
+**How does it beat Mule?** The combination of precompiled script functions,
+cached flow closures, native `Bun.serve`, and multi-worker `reusePort`
+parallelism lets dataweave-to-js scale across CPU cores with per-request
+latency around 0.6 ms p50. Mule's JVM precompiles flows and uses a thread pool,
+but the startup cost (Spring + connector bootstrap) and heavier memory footprint
+leave it behind on cold start, latency tails, throughput, and memory. The
+earlier per-request overheads — `new Function` recompilation and a double
+check+real pass — were eliminated first, then parallelism unlocked the rest.

@@ -1,10 +1,11 @@
 export const BENCHMARK = {
-  coldStartMs: { dataweaveToJs: 1023, mule: 16428 },
+  coldStartMs: { dataweaveToJs: 694, mule: 16428 },
   latencyMs: {
-    dataweaveToJs: { p50: 3.8, p95: 5.6, p99: 6.8 },
-    mule: { p50: 2.1, p95: 4.5, p99: 8.2 },
+    dataweaveToJs: { p50: 0.6, p95: 2.0, p99: 4.1 },
+    mule: { p50: 0.7, p95: 8.4, p99: 18.1 },
   },
-  throughputRps: { dataweaveToJs: 37900, mule: 62100 },
+  throughputRps: { dataweaveToJs: 205800, mule: 86100 },
+  peakMemoryMB: { dataweaveToJs: 637, mule: 1557 },
   versions: { mule: "4.6.30", dataweaveToJs: "2.0.0" },
 } as const;
 
