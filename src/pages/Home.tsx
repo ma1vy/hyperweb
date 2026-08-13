@@ -4,6 +4,8 @@ import { Download, ExternalLink, ChevronDown } from "lucide-react";
 import { useTheme } from "@/lib/theme";
 import { HyperLogo } from "@/components/HyperLogo";
 import RotatingText from "@/components/RotatingText";
+import { Card } from "@/components/Card";
+import { BENCHMARK } from "@/data/benchmark";
 
 type Release = {
   tag: string;
@@ -145,6 +147,86 @@ export default function Home() {
           </motion.div>
         </section>
         <section className="flex h-dvh snap-start" />
+        <section className="flex h-dvh snap-start flex-col items-center justify-center gap-8 px-6">
+          <div className="space-y-3 text-center">
+            <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-white/70 backdrop-blur">
+              dataweave-to-js
+            </span>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">
+              <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                Met
+              </span>
+              rics
+            </h2>
+            <p className="mx-auto max-w-xl text-base text-white/60">
+              Measured locally against Mule 4.6 EE on the same machine, same
+              Mule XML, port 8081.
+            </p>
+          </div>
+          <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { label: "Cold start", value: `${BENCHMARK.coldStartMs.dataweaveToJs} ms`, note: `${BENCHMARK.coldStartMs.mule} ms on Mule 4.6 EE` },
+              { label: "Latency p50", value: `${BENCHMARK.latencyMs.dataweaveToJs.p50} ms`, note: `vs ${BENCHMARK.latencyMs.mule.p50} ms on Mule` },
+              { label: "Latency p95", value: `${BENCHMARK.latencyMs.dataweaveToJs.p95} ms`, note: `vs ${BENCHMARK.latencyMs.mule.p95} ms on Mule` },
+              { label: "Latency p99", value: `${BENCHMARK.latencyMs.dataweaveToJs.p99} ms`, note: `vs ${BENCHMARK.latencyMs.mule.p99} ms on Mule` },
+              { label: "Throughput", value: `${BENCHMARK.throughputRps.dataweaveToJs} req/s`, note: `vs ${BENCHMARK.throughputRps.mule} req/s on Mule` },
+              { label: "Artifact", value: "1 file, 0 deps", note: "single-file JS, runs on Bun and Node" },
+            ].map((m) => (
+              <Card key={m.label} variant="ink-dark" square={false}>
+                <div className="flex h-full flex-col justify-between gap-3">
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold text-white/90">{m.label}</h3>
+                    <p className="text-2xl font-bold tracking-tight text-white">{m.value}</p>
+                    <p className="text-xs leading-relaxed text-white/60">{m.note}</p>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+        <section className="flex h-dvh snap-start flex-col items-center justify-center gap-8 px-6">
+          <div className="space-y-3 text-center">
+            <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-white/70 backdrop-blur">
+              Comparison
+            </span>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">
+              <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                Mule
+              </span>{" "}
+              vs
+            </h2>
+            <p className="mx-auto max-w-xl text-base text-white/60">
+              dataweave-to-js vs Mule 4.6 EE — same app, same machine,
+              single-machine measurements (not a certified benchmark).
+            </p>
+          </div>
+          <div className="w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-white/10 text-white/50">
+                  <th className="px-4 py-3 font-medium">Metric</th>
+                  <th className="px-4 py-3 font-medium text-white">dataweave-to-js</th>
+                  <th className="px-4 py-3 font-medium">Mule 4.6 EE</th>
+                </tr>
+              </thead>
+              <tbody className="text-white/80">
+                {[
+                  ["Cold start", `${BENCHMARK.coldStartMs.dataweaveToJs} ms`, `${BENCHMARK.coldStartMs.mule} ms`],
+                  ["Latency p50", `${BENCHMARK.latencyMs.dataweaveToJs.p50} ms`, `${BENCHMARK.latencyMs.mule.p50} ms`],
+                  ["Latency p95", `${BENCHMARK.latencyMs.dataweaveToJs.p95} ms`, `${BENCHMARK.latencyMs.mule.p95} ms`],
+                  ["Latency p99", `${BENCHMARK.latencyMs.dataweaveToJs.p99} ms`, `${BENCHMARK.latencyMs.mule.p99} ms`],
+                  ["Throughput", `${BENCHMARK.throughputRps.dataweaveToJs} req/s`, `${BENCHMARK.throughputRps.mule} req/s`],
+                ].map((row) => (
+                  <tr key={row[0]} className="border-b border-white/5 last:border-0">
+                    <td className="px-4 py-3 text-white/50">{row[0]}</td>
+                    <td className="px-4 py-3 font-semibold text-white">{row[1]}</td>
+                    <td className="px-4 py-3">{row[2]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </main>
   );
