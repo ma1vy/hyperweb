@@ -168,35 +168,35 @@ export default function Home() {
               single-machine measurements. Tests were run on Linux with Oha.
             </p>
           </div>
-          <div className="w-full max-w-3xl overflow-x-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
-            <table className="w-full text-left text-sm whitespace-nowrap">
+          <div className="w-full max-w-3xl rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
+            <table className="w-full text-left text-xs whitespace-nowrap sm:text-sm">
               <thead>
                 <tr className="border-b border-white/10 text-white/50">
-                  <th className="px-4 py-3 font-medium">Metric</th>
-                  <th className="px-4 py-3 font-medium text-white">dataweave-to-js</th>
-                  <th className="px-4 py-3 font-medium">Mule 4.6 EE</th>
+                  <th className="px-2 py-2.5 font-medium sm:px-4 sm:py-3">Metric</th>
+                  <th className="px-2 py-2.5 font-medium text-white sm:px-4 sm:py-3">dataweave-to-js</th>
+                  <th className="px-2 py-2.5 font-medium sm:px-4 sm:py-3">Mule 4.6 EE</th>
                 </tr>
               </thead>
               <tbody className="text-white/80">
                 {[
                   { label: "Cold start", dw: BENCHMARK.coldStartMs.dataweaveToJs, mule: BENCHMARK.coldStartMs.mule, unit: "ms" },
-                  { label: "Latency p50", dw: BENCHMARK.latencyMs.dataweaveToJs.p50, mule: BENCHMARK.latencyMs.mule.p50, unit: "ms" },
-                  { label: "Latency p95", dw: BENCHMARK.latencyMs.dataweaveToJs.p95, mule: BENCHMARK.latencyMs.mule.p95, unit: "ms" },
-                  { label: "Latency p99", dw: BENCHMARK.latencyMs.dataweaveToJs.p99, mule: BENCHMARK.latencyMs.mule.p99, unit: "ms" },
+                  { label: "p50", dw: BENCHMARK.latencyMs.dataweaveToJs.p50, mule: BENCHMARK.latencyMs.mule.p50, unit: "ms" },
+                  { label: "p95", dw: BENCHMARK.latencyMs.dataweaveToJs.p95, mule: BENCHMARK.latencyMs.mule.p95, unit: "ms" },
+                  { label: "p99", dw: BENCHMARK.latencyMs.dataweaveToJs.p99, mule: BENCHMARK.latencyMs.mule.p99, unit: "ms" },
                   { label: "Throughput", dw: BENCHMARK.throughputRps.dataweaveToJs, mule: BENCHMARK.throughputRps.mule, unit: "req/s", higherIsBetter: true },
-                  { label: "Peak memory", dw: BENCHMARK.peakMemoryMB.dataweaveToJs, mule: BENCHMARK.peakMemoryMB.mule, unit: "MB" },
+                  { label: "VRAM Usage", dw: BENCHMARK.peakMemoryMB.dataweaveToJs, mule: BENCHMARK.peakMemoryMB.mule, unit: "MB" },
                 ].map((row) => {
                   const { pct, isGreen } = deltaBadge(row.dw, row.mule, row.higherIsBetter);
                   return (
                     <tr key={row.label} className="border-b border-white/5 last:border-0">
-                      <td className="px-4 py-3 text-white/50">{row.label}</td>
-                      <td className="px-4 py-3 font-semibold text-white">
+                      <td className="px-2 py-2.5 text-white/50 sm:px-4 sm:py-3">{row.label}</td>
+                      <td className="px-2 py-2.5 font-semibold text-white sm:px-4 sm:py-3">
                         <span className="inline-flex items-baseline gap-1.5">
                           <span>
                             {formatMetric(row.dw)} {row.unit}
                           </span>
                           <span
-                            className={`text-xs font-medium ${
+                            className={`text-[10px] font-medium sm:text-xs ${
                               isGreen ? "text-emerald-400" : "text-rose-400"
                             }`}
                           >
@@ -204,7 +204,7 @@ export default function Home() {
                           </span>
                         </span>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-2 py-2.5 sm:px-4 sm:py-3">
                         {formatMetric(row.mule)} {row.unit}
                       </td>
                     </tr>
