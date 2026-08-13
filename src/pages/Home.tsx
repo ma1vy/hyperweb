@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { Download, ExternalLink } from "lucide-react";
+import { Download, ExternalLink, ChevronDown } from "lucide-react";
 import { useTheme } from "@/lib/theme";
 import { HyperLogo } from "@/components/HyperLogo";
-import { RotatingWord } from "@/components/RotatingWord";
+import RotatingText from "@/components/RotatingText";
 
 type Release = {
   tag: string;
@@ -13,6 +13,11 @@ type Release = {
 const reveal = {
   hidden: { opacity: 0, y: 5 },
   visible: { opacity: 1, y: 0 },
+};
+
+const MOCK_RELEASE: Release = {
+  tag: "v0.0.0",
+  assets: [],
 };
 
 export default function Home() {
@@ -26,15 +31,15 @@ export default function Home() {
         return res.json();
       })
       .then(setRelease)
-      .catch(() => {});
+      .catch(() => setRelease(MOCK_RELEASE));
   }, []);
 
   const zipAsset = release?.assets.find((a) => a.name.toLowerCase().endsWith(".zip"));
 
   return (
-    <main className="relative z-10 h-screen w-full overflow-hidden text-white">
+    <main className="relative z-10 h-dvh w-full snap-y snap-mandatory overflow-y-scroll text-white">
       <div className="h-full">
-        <section className="flex h-full flex-col items-center justify-center px-6 text-center">
+        <section className="flex h-dvh snap-start flex-col items-center justify-center px-6 text-center">
           <motion.div
             variants={reveal}
             initial="hidden"
@@ -53,7 +58,21 @@ export default function Home() {
                   yper
                 </span>
               </motion.span>
-              <RotatingWord words={["somnia", "Rest", "AI", "Mule"]} className="text-white" />
+              <RotatingText
+                texts={["DEV", "Rest", "AI", "Mule"]}
+                mainClassName="px-2 sm:px-2 md:px-3 text-white overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg"
+                staggerFrom="last"
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "-120%" }}
+                staggerDuration={0.025}
+                splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+                transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                rotationInterval={2000}
+                splitBy="characters"
+                auto
+                loop
+              />
             </h1>
           </motion.div>
 
@@ -81,7 +100,7 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
             className="flex flex-wrap items-center justify-center gap-4 pt-10"
           >
-            <div className="flex flex-col items-center gap-3">
+            <div className="relative flex flex-col items-center gap-3">
               <a
                 href={zipAsset ? `/api/hypersomnia/download/${zipAsset.id}` : "#"}
                 aria-disabled={!zipAsset}
@@ -95,7 +114,9 @@ export default function Home() {
                 <Download className="size-6" />
               </a>
               {release?.tag && (
-                <p className="text-sm text-white/40">Version {release.tag}</p>
+                <p className="absolute left-1/2 top-full -translate-x-1/2 pt-2 text-sm text-white/40">
+                  Version {release.tag}
+                </p>
               )}
             </div>
             <a
@@ -108,7 +129,22 @@ export default function Home() {
               <ExternalLink className="size-6" />
             </a>
           </motion.div>
+
+          <motion.div
+            className="pointer-events-none absolute bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] left-1/2 flex -translate-x-1/2 flex-col items-center gap-1"
+          >
+            <span className="text-[10px] font-medium uppercase tracking-widest text-white/60">
+              scroll down
+            </span>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <ChevronDown className="size-5" />
+            </motion.div>
+          </motion.div>
         </section>
+        <section className="flex h-dvh snap-start" />
       </div>
     </main>
   );

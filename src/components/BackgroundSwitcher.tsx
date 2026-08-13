@@ -129,7 +129,7 @@ export function BackgroundSwitcher({
         </AnimatePresence>
       </div>
 
-      <div className="absolute left-1/2 top-4 z-20 flex -translate-x-1/2 items-center gap-3">
+      <div className="absolute left-1/2 top-4 z-40 flex -translate-x-1/2 items-center gap-3 mt-10">
         <button
           type="button"
           onClick={prev}

@@ -32,7 +32,7 @@ export function NavBar() {
         to="/"
         className="flex items-center gap-2 text-sm font-semibold tracking-tight text-white/90"
       >
-        <span className="text-lg">Hypersomnia</span>
+        <span className="text-lg">HyperDEV</span>
       </Link>
 
       {/* Desktop: inline buttons (md and up) */}
